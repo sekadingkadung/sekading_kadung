@@ -1,0 +1,712 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RECIPE AI - Smart Cooking Assistant for Student Entrepreneurs</title>
+  <meta name="description" content="AI-powered recipe assistant with exact ingredient amounts, budget estimation, and time planning for student entrepreneurs and small food businesses.">
+  <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;🍳&lt;/text&gt;&lt;/svg&gt;">
+  <link rel="stylesheet" href="css/style.css">
+<script src="https://beacon.cdn.qq.com/sdk/4.5.9/beacon_web.min.js"></script>
+<script>
+(function(){
+  try{
+    var beacon=new BeaconAction({
+      appkey:'0WEB06U85YBSLJNL',
+      versionCode:'1.0.0',
+      channelID:'share',
+      delay:1000,
+      sessionDuration:30*60*1000,
+      isOversea:true,
+      needReportRqdEvent:false
+    });
+    beacon.onDirectUserAction('preview_page_view',{
+      'url':location.href,
+      'referrer':document.referrer,
+      'title':document.title,
+      'sandbox_id':'fb811d07bae04e03846808fe443fcd1b'
+    });
+  }catch(e){}
+})();
+</script><script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1/dist/mobilenet.min.js" crossorigin="anonymous"></script></head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="header-logo">
+        <span class="logo-icon">🍳</span>
+        <span>RECIPE AI</span>
+      </div>
+      <span class="header-tagline">Smart Cooking Assistant for Student Entrepreneurs</span>
+      <div class="header-stats">
+        <div class="header-stat">
+          <div class="header-stat-value">15</div>
+          <div class="header-stat-label">Recipes</div>
+        </div>
+        <div class="header-stat">
+          <div class="header-stat-value">RM 0.92</div>
+          <div class="header-stat-label">Min cost</div>
+        </div>
+        <div class="header-stat">
+          <div class="header-stat-value">54%+</div>
+          <div class="header-stat-label">Avg margin</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="nav-bar">
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-tab="chat">💬 Chat with RECIPE AI</button>
+      <button class="nav-tab" data-tab="recipes">🍳 Recipe Browser</button>
+      <button class="nav-tab" data-tab="budget">💰 Budget Planner</button>
+      <button class="nav-tab" data-tab="shopping">🛒 Shopping List</button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- Chat Tab -->
+    <div class="tab-content active" id="tab-chat">
+      <div class="chat-container">
+        <div class="chat-header">
+          <div class="chat-header-avatar">🤖</div>
+          <div class="chat-header-info">
+            <h3>RECIPE AI</h3>
+            <span>Your food business co-pilot</span>
+          </div>
+          <div class="chat-status">
+            <span class="status-dot"></span>
+            <span>Online</span>
+          </div>
+        </div>
+        <div id="chat-messages">
+          <div class="chat-message ai">
+            <div class="chat-avatar">🤖</div>
+            <div class="chat-bubble">
+              <strong>Hello! 👋 I'm RECIPE AI</strong><br><br>
+              Your food business co-pilot. I help student entrepreneurs &amp; small business owners cook great food on a budget.<br><br>
+              I can help you with:<br>
+              🍳 Finding recipes with exact ingredient amounts<br>
+              💰 Calculating total cost &amp; profit per serving<br>
+              ⏱️ Showing prep + cook time estimates<br>
+              🛒 Generating shopping lists<br>
+              📊 Recommending best-margin recipes for your budget<br><br>
+              What would you like to cook today? 🍽️
+            </div>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <button class="quick-action" data-message="I have RM 30, what can I make?">💰 RM 30 budget</button>
+          <button class="quick-action" data-message="Show me the most profitable recipes">📊 Most profitable</button>
+          <button class="quick-action" data-message="What's the fastest recipe?">⏱️ Fastest recipe</button>
+          <button class="quick-action" data-message="Give me business tips for a mamak stall">💡 Business tips</button>
+          <button class="quick-action" data-message="Verify nasi lemak recipe online">🌐 Web verify</button>
+          <button class="quick-action" data-message="Show all recipes">📋 All recipes</button>
+        </div>
+        <div class="chat-input-bar">
+          <button id="image-upload-btn" class="chat-icon-btn" title="Upload food photo for identification" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+              <circle cx="9" cy="9" r="2"></circle>
+              <path d="M21 15l-5-5L5 21"></path>
+            </svg>
+          </button>
+          <button id="camera-btn" class="chat-icon-btn" title="Take a photo" type="button" onclick="document.getElementById('camera-input').click()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+          </button>
+          <input type="file" id="image-file-input" accept="image/*" style="display:none;">
+          <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none;">
+          <input type="text" id="chat-input" placeholder="Ask about recipes, budget, ingredients... or drag &amp; drop a food photo!" autocomplete="off">
+          <button id="chat-send" class="chat-send-btn" title="Send message">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recipe Browser Tab -->
+    <div class="tab-content" id="tab-recipes">
+      <div id="dashboard-stats" class="dashboard-stats">
+      <div class="stat-card">
+        <span class="stat-card-value">15</span>
+        <span class="stat-card-label">Recipes</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card-value">RM 0.92</span>
+        <span class="stat-card-label">Cheapest recipe</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card-value">RM 2.00</span>
+        <span class="stat-card-label">Avg cost/serving</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card-value">54%</span>
+        <span class="stat-card-label">Avg profit margin</span>
+      </div>
+    </div>
+      <div class="browser-header">
+        <input type="text" id="recipe-search" placeholder="🔍 Search recipes by name, cuisine, or tag...">
+        <select id="category-filter">
+          <option value="all">All Categories</option>
+          <option value="main_course">Main Course</option>
+          <option value="snack">Snack</option>
+          <option value="drink">Drinks</option>
+          <option value="breakfast">Breakfast</option>
+        </select>
+      </div>
+      <div class="recipe-grid" id="recipe-grid">
+      <div class="recipe-card" data-id="1">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">🍚</span>
+          <button class="fav-btn " data-id="1" onclick="event.stopPropagation(); App.toggleFavorite(1)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Nasi Lemak Ayam Goreng</h3>
+        <p class="recipe-card-desc">Malaysia's national dish. Coconut rice with sambal, fried chicken, egg, anchovie...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 5.87</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 10.00</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 4.13</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">45 min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">41% margin</span>
+          <span class="tag difficulty-tag">Medium</span>
+          <span class="tag servings-tag">5 servings</span>
+        </div>
+      </div>
+    
+      <div class="recipe-card" data-id="2">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">🍜</span>
+          <button class="fav-btn " data-id="2" onclick="event.stopPropagation(); App.toggleFavorite(2)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Maggi Goreng Mamak</h3>
+        <p class="recipe-card-desc">The student favorite — Maggi noodles stir-fried Mamak style. Cheapest noodle dis...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 3.45</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 6.00</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 2.55</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">15 min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">43% margin</span>
+          <span class="tag difficulty-tag">Easy</span>
+          <span class="tag servings-tag">2 servings</span>
+        </div>
+      </div>
+    
+      <div class="recipe-card" data-id="3">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">🫓</span>
+          <button class="fav-btn " data-id="3" onclick="event.stopPropagation(); App.toggleFavorite(3)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Roti Canai</h3>
+        <p class="recipe-card-desc">The king of Malaysian breakfast. Flaky flatbread served with dhal curry. Near-ze...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 0.55</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 1.50</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 0.95</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">45 min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">63% margin</span>
+          <span class="tag difficulty-tag">Medium</span>
+          <span class="tag servings-tag">10 servings</span>
+        </div>
+      </div>
+    
+      <div class="recipe-card" data-id="5">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">🧋</span>
+          <button class="fav-btn " data-id="5" onclick="event.stopPropagation(); App.toggleFavorite(5)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Teh Tarik</h3>
+        <p class="recipe-card-desc">Malaysia's national drink. Pulled milk tea with a frothy top. The most profitabl...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 0.32</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 2.50</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 2.18</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">10 min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">87% margin</span>
+          <span class="tag difficulty-tag">Easy</span>
+          <span class="tag servings-tag">5 servings</span>
+        </div>
+      </div>
+    
+      <div class="recipe-card" data-id="15">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">🥟</span>
+          <button class="fav-btn " data-id="15" onclick="event.stopPropagation(); App.toggleFavorite(15)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Karipap (Curry Puffs)</h3>
+        <p class="recipe-card-desc">Flaky curry puffs filled with spiced potatoes — Malaysia's grab-and-go snack. Pe...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 0.72</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 1.50</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 0.78</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">40 min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">52% margin</span>
+          <span class="tag difficulty-tag">Medium</span>
+          <span class="tag servings-tag">10 servings</span>
+        </div>
+      </div>
+    
+      <div class="recipe-card" data-id="4">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">🍝</span>
+          <button class="fav-btn " data-id="4" onclick="event.stopPropagation(); App.toggleFavorite(4)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Char Kway Teow</h3>
+        <p class="recipe-card-desc">Wok-charred flat rice noodles with shrimp, egg and bean sprouts. A Penang icon t...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 4.60</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 8.00</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 3.40</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">20 min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">43% margin</span>
+          <span class="tag difficulty-tag">Medium</span>
+          <span class="tag servings-tag">2 servings</span>
+        </div>
+      </div>
+    
+      <div class="recipe-card" data-id="6">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">🍌</span>
+          <button class="fav-btn " data-id="6" onclick="event.stopPropagation(); App.toggleFavorite(6)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Pisang Goreng</h3>
+        <p class="recipe-card-desc">Crispy fried banana fritters — Malaysia's favorite afternoon snack. Super cheap ...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 1.48</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 3.50</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 2.02</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">25 min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">58% margin</span>
+          <span class="tag difficulty-tag">Easy</span>
+          <span class="tag servings-tag">4 servings</span>
+        </div>
+      </div>
+    
+      <div class="recipe-card" data-id="7">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">🍜</span>
+          <button class="fav-btn " data-id="7" onclick="event.stopPropagation(); App.toggleFavorite(7)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Mee Goreng</h3>
+        <p class="recipe-card-desc">Malay-style fried yellow noodles with egg, tofu and vegetables. A campus staple ...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 3.60</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 6.50</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 2.90</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">20 min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">45% margin</span>
+          <span class="tag difficulty-tag">Easy</span>
+          <span class="tag servings-tag">2 servings</span>
+        </div>
+      </div>
+    
+      <div class="recipe-card" data-id="8">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">☕</span>
+          <button class="fav-btn " data-id="8" onclick="event.stopPropagation(); App.toggleFavorite(8)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Kopi O Ais</h3>
+        <p class="recipe-card-desc">Iced black coffee with sugar — the cheapest drink to make and the go-to refreshe...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 0.92</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 2.50</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 1.58</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">5 min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">63% margin</span>
+          <span class="tag difficulty-tag">Easy</span>
+          <span class="tag servings-tag">1 servings</span>
+        </div>
+      </div>
+    
+      <div class="recipe-card" data-id="10">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">🍞</span>
+          <button class="fav-btn " data-id="10" onclick="event.stopPropagation(); App.toggleFavorite(10)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Roti Bakar Kaya</h3>
+        <p class="recipe-card-desc">Toasted bread with kaya (coconut jam) and butter, served with soft-boiled eggs. ...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 1.93</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 4.00</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 2.07</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">13 min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">52% margin</span>
+          <span class="tag difficulty-tag">Easy</span>
+          <span class="tag servings-tag">2 servings</span>
+        </div>
+      </div>
+    
+      <div class="recipe-card" data-id="11">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">🍗</span>
+          <button class="fav-btn " data-id="11" onclick="event.stopPropagation(); App.toggleFavorite(11)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Ayam Goreng Berempah</h3>
+        <p class="recipe-card-desc">Turmeric-spiced fried chicken served with rice — a Malaysian comfort food classi...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 5.60</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 8.00</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 2.40</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">25 min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">30% margin</span>
+          <span class="tag difficulty-tag">Easy</span>
+          <span class="tag servings-tag">1 servings</span>
+        </div>
+      </div>
+    
+      <div class="recipe-card" data-id="13">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">🧊</span>
+          <button class="fav-btn " data-id="13" onclick="event.stopPropagation(); App.toggleFavorite(13)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Ais Kacang (ABC)</h3>
+        <p class="recipe-card-desc">Malaysia's iconic shaved ice dessert with red beans, corn, jelly and syrup. A mu...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 2.02</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 4.50</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 2.48</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">15 min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">55% margin</span>
+          <span class="tag difficulty-tag">Easy</span>
+          <span class="tag servings-tag">4 servings</span>
+        </div>
+      </div>
+    
+      <div class="recipe-card" data-id="9">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">🥤</span>
+          <button class="fav-btn " data-id="9" onclick="event.stopPropagation(); App.toggleFavorite(9)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Cendol</h3>
+        <p class="recipe-card-desc">Malaysia's beloved iced dessert — green pandan jelly, coconut milk and gula Mela...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 1.82</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 4.00</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 2.18</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">20 min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">54% margin</span>
+          <span class="tag difficulty-tag">Easy</span>
+          <span class="tag servings-tag">4 servings</span>
+        </div>
+      </div>
+    
+      <div class="recipe-card" data-id="12">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">🍮</span>
+          <button class="fav-btn " data-id="12" onclick="event.stopPropagation(); App.toggleFavorite(12)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Kuih Lapis</h3>
+        <p class="recipe-card-desc">Steamed layered coconut cake — a traditional Malay kuih that's cheap to make and...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 0.30</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 1.00</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 0.70</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">1h 20min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">70% margin</span>
+          <span class="tag difficulty-tag">Medium</span>
+          <span class="tag servings-tag">16 servings</span>
+        </div>
+      </div>
+    
+      <div class="recipe-card" data-id="14">
+        <div class="recipe-card-header">
+          <span class="recipe-emoji">🍝</span>
+          <button class="fav-btn " data-id="14" onclick="event.stopPropagation(); App.toggleFavorite(14)">
+            ☆
+          </button>
+        </div>
+        <h3 class="recipe-card-title">Mee Hoon Goreng</h3>
+        <p class="recipe-card-desc">Fried rice vermicelli — lighter and cheaper than mee goreng. Great option for cu...</p>
+        <div class="recipe-card-stats">
+          <div class="stat">
+            <span class="stat-label">Cost/serving</span>
+            <span class="stat-value">RM 2.30</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Sell price</span>
+            <span class="stat-value">RM 5.50</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Profit</span>
+            <span class="stat-value profit">RM 3.20</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Time</span>
+            <span class="stat-value">18 min</span>
+          </div>
+        </div>
+        <div class="recipe-card-tags">
+          <span class="tag margin-tag">58% margin</span>
+          <span class="tag difficulty-tag">Easy</span>
+          <span class="tag servings-tag">2 servings</span>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- Budget Planner Tab -->
+    <div class="tab-content" id="tab-budget">
+      <div id="budget-content"></div>
+    </div>
+
+    <!-- Shopping List Tab -->
+    <div class="tab-content" id="tab-shopping">
+      <div id="shopping-content"></div>
+    </div>
+
+  </main>
+
+  <!-- Recipe Detail Modal -->
+  <div class="modal-overlay" id="recipe-modal">
+    <div class="modal-content" id="recipe-modal-content"></div>
+    <button class="modal-close-btn" id="modal-close">✕</button>
+  </div>
+
+  <!-- Model Status Indicator -->
+  <div class="model-status ready" id="model-status">
+    <span class="spinner"></span>
+    <span id="model-status-text">Image recognition unavailable</span>
+  </div>
+
+  <!-- Scripts -->
+  <!-- TensorFlow.js + MobileNet are loaded dynamically by vision.js when needed -->
+  <!-- App scripts -->
+  <script src="js/recipes.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/vision.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/app.js"></script>
+
+
+</body></html>
